@@ -19,7 +19,7 @@ export default function Contact() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           
           {/* Resume Download */}
-          <a href="/Bharat_Natrayn_UI_DEVELOPER.pdf" download>
+          <a href="/resume/Bharat_Natrayn_UI_DEVELOPER.pdf" download>
             <Button size="lg" className="w-full sm:w-auto cursor-pointer">
               Download Resume
             </Button>
