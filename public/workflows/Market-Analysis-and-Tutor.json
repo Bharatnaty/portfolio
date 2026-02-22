@@ -1,0 +1,1211 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        720
+      ],
+      "id": "b07b80d2-1cca-4e24-ae6c-f987f843a1b5",
+      "name": "Schedule Trigger",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.nseindia.com/api/allIndices",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        -192
+      ],
+      "id": "709c96db-6e3c-4574-a942-5104d4a33c2f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb4e3295-09e4-47b4-a0c7-6e5c842271a7",
+              "name": "nifty",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY 50\").last }}",
+              "type": "string"
+            },
+            {
+              "id": "3618a165-08b0-4792-89e0-d60e5f7213a4",
+              "name": "niftyChange",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY 50\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "ef9ad8de-745b-4f50-a9f1-a0163e4e499c",
+              "name": "=vix",
+              "value": "={{ $json.data.find(i => i.index === \"INDIA VIX\").last }}",
+              "type": "string"
+            },
+            {
+              "id": "1bbdc58c-4284-4a2b-9146-bd1064ac6dbe",
+              "name": "bank",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY BANK\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "7599fafd-2e5c-4758-ba5b-76083f034ada",
+              "name": "=fmcg",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY FMCG\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "53108d4e-f885-4d37-9209-9f40432c3067",
+              "name": "metal",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY METAL\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "2cc46d8a-8716-4ce6-9698-55113d9e3861",
+              "name": "auto",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY AUTO\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "47beaee5-51d3-4380-8466-fd7231593413",
+              "name": "it",
+              "value": "={{ $json.data.find(i => i.index === \"NIFTY IT\").percentChange }}",
+              "type": "string"
+            },
+            {
+              "id": "ef50a170-6af7-4226-b6b3-c5ba05f2aa22",
+              "name": "trend",
+              "value": "={{   $json.data.find(i => i.index === \"NIFTY 50\").percentChange > 0   ? \"Bullish\"   : \"Bearish\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -192
+      ],
+      "id": "f69d1577-27bf-43de-8696-686b92bee1a9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://open.er-api.com/v6/latest/USD",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        -16
+      ],
+      "id": "a4875ed3-d751-4e5b-a85b-f44894f8505e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "970e8311-40f1-4913-8561-596cc28071dd",
+              "name": "usd_inr",
+              "value": "={{ $json.rates.INR}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -16
+      ],
+      "id": "42ce8ca6-54cf-4713-932f-6878c1c1481b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/CL=F",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        192
+      ],
+      "id": "aae4fad4-fde0-4958-b039-f698e0a8b565",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0525b082-596b-4fad-9557-69ed386e65b8",
+              "name": "crude",
+              "value": "={{ $json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            },
+            {
+              "id": "bd4d64ab-bf58-43d1-a375-c196df23321c",
+              "name": "fiftyTwoWeekHigh",
+              "value": "={{ $json.chart.result[0].meta.fiftyTwoWeekHigh }}",
+              "type": "string"
+            },
+            {
+              "id": "9d3720ce-508e-4e7b-9c5e-bdb76f029e4e",
+              "name": "fiftyTwoWeekLow",
+              "value": "={{ $json.chart.result[0].meta.fiftyTwoWeekLow }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        192
+      ],
+      "id": "65daf1e1-d2ad-4844-b79e-6d455c4b578c",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        432
+      ],
+      "id": "e4ff3037-e9ea-4880-88a9-77107c76a9f3",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "be2e7902-c7c2-42aa-96ab-479805f54a26",
+              "name": "sp500",
+              "value": "={{ $json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        432
+      ],
+      "id": "11e05b4f-f25a-4879-a2da-47ea20c72a5c",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EIXIC",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        640
+      ],
+      "id": "3bbcfed1-5dda-43c8-8c98-39e0cc6d8485",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0967a68f-f445-4f76-8fd8-d4ad5afacfb2",
+              "name": "nasdaq",
+              "value": "={{ $json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        640
+      ],
+      "id": "b46de524-14f2-4e1c-8990-4802f1a6e07c",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2112,
+        240
+      ],
+      "id": "36e0bf66-a717-492f-b68a-5153697878be",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        864
+      ],
+      "id": "ea603f82-8792-40a0-94c8-d5a86f1657fe",
+      "name": "RSS Read Indian economy/ Policy"
+    },
+    {
+      "parameters": {
+        "url": "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        1056
+      ],
+      "id": "4980a9f9-9acd-495c-9c45-cb73f13bafaf",
+      "name": "RSS Read Indian Economy"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        992
+      ],
+      "id": "c47caa38-cf71-4b43-a516-bc8cb61ced1c",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "08e55e02-8e14-45d9-bcbd-167b458a7af6",
+              "name": "title",
+              "value": "={{$json.title.replace(/<[^>]*>/g, '').replace(/\\s+/g,' ').trim()}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        992
+      ],
+      "id": "e7546961-a622-4660-8ac8-e2305901e844",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        816,
+        752
+      ],
+      "id": "6e6ca0bd-3ab4-4871-84e0-783c17bc28fb",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "maxItems": 20
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        592
+      ],
+      "id": "79c333c3-2365-409e-ad8c-4d97b401927a",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "jsCode": "const titles = items.map(i => i.json.title);\nreturn [{ json: { input: titles.join(\"\\n\") } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        592
+      ],
+      "id": "4390f2f0-fe78-49c1-8435-2d18c6342d50",
+      "name": "Code in JavaScript Join Headlines"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        1536,
+        464
+      ],
+      "id": "9b31a40f-eaeb-4ba9-8bc5-c278923fac55",
+      "name": "When chat message received",
+      "webhookId": "57d5d28e-c20d-44c4-96d4-7ab4d3a81674"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nHEADLINES:\n{{$json.input }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a macro news compressor. Group similar headlines into one event. Keep only events that move stock indices: central banks, inflation, bond yields, oil, geopolitics, trade policy, recession risk, global growth. Return max 6 events as JSON array of short sentences. Respond ONLY JSON."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1680,
+        592
+      ],
+      "id": "10782e89-ecac-4bf5-ba60-badcd0b6814f",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        592
+      ],
+      "id": "faf34ccf-4a3f-4a23-98f6-9b1f18915087",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "8DI80wmVTQgV5vqB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Classify each event into:\nmonetary_policy, inflation, geopolitics, earnings, liquidity, global_cues, commodities, currency, regulation\n\nAlso give:\nimpact_on_india: positive/negative/neutral\naffected_sector\n\nEVENTS:\n{{$json.text}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": " Convert financial events into economic signals. Return JSON array only."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2032,
+        592
+      ],
+      "id": "f30bd73e-f7e3-4ae8-b5ec-eb3e36e2477d",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        800
+      ],
+      "id": "001c58f7-5d74-4b36-ab13-95c5e445f2c3",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "8DI80wmVTQgV5vqB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ff64ac00-b82b-4fce-90a7-a0afe45c835a",
+              "name": "Market",
+              "value": "={{$json}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2384,
+        320
+      ],
+      "id": "7cdb53bd-192c-450d-8425-1e2702638947",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2672,
+        400
+      ],
+      "id": "01cc0d91-0b91-4520-9a7b-2fc73b903d2e",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=MARKET STATE: \nPrices: {{$json.Market}}\nSignals: {{ JSON.parse($json.values()[0] ) }}\nExplain: summary reason primary_driver secondary sector_impact prediction confidence\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Determine causal chain: global macro → sector → index movement.  Use only provided data. Do not hallucinate. Return JSON only."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2880,
+        400
+      ],
+      "id": "612b6811-7030-4726-92cf-d9005a15ef20",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2816,
+        608
+      ],
+      "id": "70280b07-f2d3-48d2-a02e-72e6a5d41f6d",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "8DI80wmVTQgV5vqB",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c553a61d-c327-4125-a347-bb88530cdf64",
+              "name": "headlines",
+              "value": "={{ JSON.parse($json.text).map(item => item.event) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2384,
+        592
+      ],
+      "id": "6145416f-2385-4a89-b230-f37ab092802e",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "chatId": "1027479520",
+        "text": "=*Market Summary*\n\n{{ JSON.parse($json.parsed).summary  }}\n\n*Primary Driver:* {{ JSON.parse($json.parsed).primary_driver }}\n\n*Prediction:* {{ JSON.parse($json.parsed).prediction }}\n\n*Confidence:* {{ JSON.parse($json.parsed).confidence }}\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3472,
+        464
+      ],
+      "id": "19400273-7342-4344-b2d9-de1ecfa7824e",
+      "name": "Send a text message",
+      "webhookId": "b8c3ba7a-4c28-4e79-bbb1-0a36577ffa2a",
+      "credentials": {
+        "telegramApi": {
+          "id": "SyRANuoWque3hJve",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ef6d7ea5-f1d6-44c5-b23a-af889c3f5af7",
+              "name": "parsed",
+              "value": "={{ JSON.parse($json.text) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3232,
+        464
+      ],
+      "id": "ee6812be-e547-433b-ab44-0fed953ac8bf",
+      "name": "Edit Fields8"
+    }
+  ],
+  "pinData": {
+    "HTTP Request1": [
+      {
+        "json": {
+          "result": "success",
+          "provider": "https://www.exchangerate-api.com",
+          "documentation": "https://www.exchangerate-api.com/docs/free",
+          "terms_of_use": "https://www.exchangerate-api.com/terms",
+          "time_last_update_unix": 1771632152,
+          "time_last_update_utc": "Sat, 21 Feb 2026 00:02:32 +0000",
+          "time_next_update_unix": 1771719102,
+          "time_next_update_utc": "Sun, 22 Feb 2026 00:11:42 +0000",
+          "time_eol_unix": 0,
+          "base_code": "USD",
+          "rates": {
+            "USD": 1,
+            "AED": 3.6725,
+            "AFN": 62.909116,
+            "ALL": 81.766127,
+            "AMD": 376.964331,
+            "ANG": 1.79,
+            "AOA": 921.539648,
+            "ARS": 1452.25,
+            "AUD": 1.414269,
+            "AWG": 1.79,
+            "AZN": 1.701013,
+            "BAM": 1.660546,
+            "BBD": 2,
+            "BDT": 122.236602,
+            "BGN": 1.607939,
+            "BHD": 0.376,
+            "BIF": 2972.800991,
+            "BMD": 1,
+            "BND": 1.267575,
+            "BOB": 6.939932,
+            "BRL": 5.213576,
+            "BSD": 1,
+            "BTN": 90.952192,
+            "BWP": 13.62532,
+            "BYN": 2.856627,
+            "BZD": 2,
+            "CAD": 1.368163,
+            "CDF": 2280.684331,
+            "CHF": 0.775677,
+            "CLF": 0.021871,
+            "CLP": 864.479285,
+            "CNH": 6.900411,
+            "CNY": 6.915665,
+            "COP": 3676.379142,
+            "CRC": 482.116245,
+            "CUP": 24,
+            "CVE": 93.617611,
+            "CZK": 20.580709,
+            "DJF": 177.721,
+            "DKK": 6.338195,
+            "DOP": 61.676302,
+            "DZD": 130.04927,
+            "EGP": 47.542125,
+            "ERN": 15,
+            "ETB": 154.903247,
+            "EUR": 0.849025,
+            "FJD": 2.19659,
+            "FKP": 0.741912,
+            "FOK": 6.338191,
+            "GBP": 0.741914,
+            "GEL": 2.675641,
+            "GGP": 0.741912,
+            "GHS": 10.966257,
+            "GIP": 0.741912,
+            "GMD": 74.123287,
+            "GNF": 8765.189505,
+            "GTQ": 7.68376,
+            "GYD": 209.233921,
+            "HKD": 7.81478,
+            "HNL": 26.498466,
+            "HRK": 6.39697,
+            "HTG": 131.331105,
+            "HUF": 322.52154,
+            "IDR": 16879.294246,
+            "ILS": 3.124886,
+            "IMP": 0.741912,
+            "INR": 90.956763,
+            "IQD": 1310.745105,
+            "IRR": 1284718.38909,
+            "ISK": 123.109308,
+            "JEP": 0.741912,
+            "JMD": 156.060947,
+            "JOD": 0.709,
+            "JPY": 155.092061,
+            "KES": 128.971601,
+            "KGS": 87.443882,
+            "KHR": 4018.251575,
+            "KID": 1.414264,
+            "KMF": 417.692336,
+            "KRW": 1447.738325,
+            "KWD": 0.306731,
+            "KYD": 0.833333,
+            "KZT": 492.411975,
+            "LAK": 21645.157306,
+            "LBP": 89500,
+            "LKR": 309.313069,
+            "LRD": 185.927591,
+            "LSL": 16.072396,
+            "LYD": 6.309014,
+            "MAD": 9.167288,
+            "MDL": 17.085473,
+            "MGA": 4323.117071,
+            "MKD": 52.409585,
+            "MMK": 2105.622517,
+            "MNT": 3537.797507,
+            "MOP": 8.049224,
+            "MRU": 40.005976,
+            "MUR": 46.307581,
+            "MVR": 15.460776,
+            "MWK": 1745.387258,
+            "MXN": 17.173046,
+            "MYR": 3.903859,
+            "MZN": 63.570462,
+            "NAD": 16.072396,
+            "NGN": 1346.356429,
+            "NIO": 36.86715,
+            "NOK": 9.538089,
+            "NPR": 145.523508,
+            "NZD": 1.674224,
+            "OMR": 0.384497,
+            "PAB": 1,
+            "PEN": 3.358086,
+            "PGK": 4.334196,
+            "PHP": 58.076393,
+            "PKR": 279.853118,
+            "PLN": 3.582821,
+            "PYG": 6535.860481,
+            "QAR": 3.64,
+            "RON": 4.331287,
+            "RSD": 99.705681,
+            "RUB": 76.834079,
+            "RWF": 1462.184812,
+            "SAR": 3.75,
+            "SBD": 7.961678,
+            "SCR": 13.841256,
+            "SDG": 510.482592,
+            "SEK": 9.06157,
+            "SGD": 1.267575,
+            "SHP": 0.741912,
+            "SLE": 24.455372,
+            "SLL": 24455.372018,
+            "SOS": 570.817543,
+            "SRD": 37.718901,
+            "SSP": 4583.747106,
+            "STN": 20.801083,
+            "SYP": 114.123084,
+            "SZL": 16.072396,
+            "THB": 31.178043,
+            "TJS": 9.389724,
+            "TMT": 3.49998,
+            "TND": 2.870137,
+            "TOP": 2.360758,
+            "TRY": 43.853314,
+            "TTD": 6.74081,
+            "TVD": 1.414264,
+            "TWD": 31.537987,
+            "TZS": 2579.029627,
+            "UAH": 43.302092,
+            "UGX": 3568.917407,
+            "UYU": 38.807541,
+            "UZS": 12205.781173,
+            "VES": 405.3518,
+            "VND": 25927.646379,
+            "VUV": 118.680875,
+            "WST": 2.685945,
+            "XAF": 556.923115,
+            "XCD": 2.7,
+            "XCG": 1.79,
+            "XDR": 0.727411,
+            "XOF": 556.923115,
+            "XPF": 101.31571,
+            "YER": 238.646035,
+            "ZAR": 16.072514,
+            "ZMW": 18.824486,
+            "ZWG": 25.5384,
+            "ZWL": 25.5384
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read Indian economy/ Policy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read Indian Economy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "RSS Read Indian economy/ Policy": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read Indian Economy": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript Join Headlines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript Join Headlines": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f7c751ff-5252-41c5-8656-26c0bc3ea6f7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba7a51755bd8817cbb6ddbd128a99d0a96783279e995af1a5883589c586c989f"
+  },
+  "id": "u3JWO3L0CNeLxpxb",
+  "tags": []
+}
